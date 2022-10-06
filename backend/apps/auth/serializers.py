@@ -1,2 +1,0 @@
-from rest_framework_simplejwt.serializers import TokenObtainSerializer, TokenRefreshSerializer
-from rest_framework_simplejwt.tokens import RefreshToken

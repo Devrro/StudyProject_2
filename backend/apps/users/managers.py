@@ -7,7 +7,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Email is not valid')
 
         email = self.normalize_email(email)
-        user = self.model(email, **kwargs)
+        user = self.model(email=email, **kwargs)
         user.set_password(password)
         user.save()
         return user

@@ -12,7 +12,7 @@ UserModel = get_user_model()
 class ProfileSerializer(ModelSerializer):
     class Meta:
         model = ProfileModel
-        exclude = ('user',)
+        exclude = ('user', 'id')
 
 
 class UserSerializer(ModelSerializer):
@@ -20,17 +20,28 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = UserModel
-        fields = '__all__'
-        read_only_fields = (
+        fields = (
             'id',
             'email',
+            'password',
+            'created_at',
+            'updated_at',
+            'last_login',
+            'is_staff',
+            'is_active',
+            'is_superuser',
+            'profile',
+        )
+        read_only_fields = (
+            'id',
             'created_at',
             'updated_at',
             'is_staff',
             'is_active',
             'is_superuser',
-            'profile'
+            'profile',
         )
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         profile = validated_data.pop('profile')

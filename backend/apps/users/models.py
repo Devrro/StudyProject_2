@@ -8,7 +8,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = 'auth_users'
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, )
     password = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -28,4 +28,5 @@ class ProfileModel(models.Model):
     second_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     age = models.IntegerField(validators=[MaxValueValidator(102), MinValueValidator(0)])
+    phone_number = models.CharField(max_length=20, blank=True, null=False)
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='profile')
