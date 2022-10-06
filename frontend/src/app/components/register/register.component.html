@@ -1,0 +1,23 @@
+<div class="col-md-12">
+  <div class="card">
+    <form [formGroup]="registerForm" *ngIf="isSuccessful" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" class="form-control" required email formControlName="email">
+        <label for="password">Password</label>
+        <input type="text" id="password" class="form-control" required formControlName="password">
+        <label for="age">Age</label>
+        <input type="text" id="age" class="form-control" required formControlName="age">
+        <label for="first_name">First name</label>
+        <input type="text" id="first_name" class="form-control" required formControlName="first_name">
+        <label for="second_name">Second name</label>
+        <input type="text" id="second_name" class="form-control" required formControlName="second_name">
+        <label for="last_name">Last name</label>
+        <input type="text" id="last_name" class="form-control" required formControlName="last_name">
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary btn-block">Sign Up</button>
+      </div>
+    </form>
+  </div>
+</div>
