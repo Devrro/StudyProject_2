@@ -61,6 +61,11 @@ INSTALLED_APPS = [
 
     'apps.users',
     'apps.rAuth',
+    'apps.UserRoles',
+    'apps.clinic',
+    'apps.clinic.appointment',
+    'apps.doctors',
+    'apps.patients',
 
 ]
 

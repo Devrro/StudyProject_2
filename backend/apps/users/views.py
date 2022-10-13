@@ -17,7 +17,15 @@ class UserListCreateView(ListCreateAPIView):
 
     def get_queryset(self):
         qs = self.queryset
-        print(qs)
+        return qs
+
+class UserListView(ListCreateAPIView):
+    queryset = UserModel.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        qs = self.queryset
         return qs
 
 

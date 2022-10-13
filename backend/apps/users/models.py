@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import UserManager
+from ..UserRoles.models import UserRoles
 
 
 class UserModel(AbstractBaseUser, PermissionsMixin):
@@ -15,6 +16,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    user_role = models.ManyToManyField(UserRoles,related_name='user_roles')
 
     USERNAME_FIELD = 'email'
     objects = UserManager()
