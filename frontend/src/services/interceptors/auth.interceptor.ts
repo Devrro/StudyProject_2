@@ -25,7 +25,6 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    console.log('intercepting')
     let authReq = request
     const token = this.tokenStorage.getAccessToken();
     if (token != null) {
@@ -33,7 +32,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     return next.handle(authReq).pipe(catchError(error => {
 
-        if (error instanceof HttpErrorResponse && !authReq.url.includes('auth/signin') && error.status === 401) {
+        if (error instanceof HttpErrorResponse && !authReq.url.includes('register') && error.status === 401) {
           return this.handle401error(authReq, next)
         }
 

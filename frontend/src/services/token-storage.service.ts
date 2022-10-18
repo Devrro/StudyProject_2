@@ -36,12 +36,11 @@ export class TokenStorageService {
     window.sessionStorage.setItem(USER_KEY, JSON.stringify(user))
   }
 
-  public getUser(): IUserModel | {} {
+  public getUser(): IUserModel | void {
     const user = window.sessionStorage.getItem(USER_KEY)
     if (user) {
       return JSON.parse(user)
     }
-    return {};
   }
 
 }

@@ -52,7 +52,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
     'corsheaders',
+    'django_filters',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -60,13 +62,17 @@ INSTALLED_APPS = [
     # Apps
 
     'apps.users',
-    'apps.rAuth',
     'apps.UserRoles',
+
+    'apps.rAuth',
+
+
     'apps.clinic',
     'apps.clinic.appointment',
-    'apps.doctors',
-    'apps.patients',
 
+    'apps.staff',
+
+    'apps.patients',
 ]
 
 MIDDLEWARE = [

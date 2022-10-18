@@ -23,11 +23,11 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     if (this.isLoggedIn) {
-      const user: IUserModel | {} = this.tokenStorageService.getUser();
+      const user: IUserModel | void = this.tokenStorageService.getUser();
       // this.roles = user.roles
       this.showAdminBoard = this.roles.includes('ROLE_ADMIN')
       this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR')
-      if (user != {}) {
+      if (user) {
         if ("profile" in user) {
           this.username = user.profile.first_name
         }

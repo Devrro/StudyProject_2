@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../../services/user.service";
+import {IUserModel} from "../../../models/IUser";
 
 @Component({
   selector: 'app-home',
@@ -8,7 +9,7 @@ import {UserService} from "../../../services/user.service";
 })
 export class HomeComponent implements OnInit {
 
-  content?: any[];
+  list_of_users?: IUserModel[];
 
   constructor(
     private UserService: UserService
@@ -18,14 +19,10 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.UserService.getUsers().subscribe({
       next: (data) => {
-        let arr = []
-        for (let i = 0; i < data.results.length; i++) {
-          arr.push(JSON.stringify(data.results[i]))
-        }
-        this.content = arr
+        this.list_of_users = data.results
       },
       error: (err) => {
-        this.content = JSON.parse(err.error.message)
+        this.list_of_users = JSON.parse(err.error.message)
       }
     })
   }

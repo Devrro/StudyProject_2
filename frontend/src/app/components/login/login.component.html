@@ -64,8 +64,8 @@
 <!--      </div>-->
     </form>
 
-    <div class="alert alert-success" *ngIf="isLoggedIn">
-      Logged in as User.
+    <div class="alert alert-success" *ngIf="isLoggedIn && user">
+      <p >Logged in as {{user.profile.first_name}} {{user.profile.last_name}}</p>
     </div>
   </div>
 </div>

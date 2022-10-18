@@ -24,6 +24,19 @@ class DoctorsModel(models.Model):
     class Meta:
         db_table = 'doctors'
 
-    doctor = models.OneToOneField(UserModel, related_name='doctor', on_delete=models.CASCADE)
-    specialization = models.ManyToManyField(DoctorsSpecialization)
-    patients = models.ManyToManyField(PatientsModel, related_name='patients')
+    doctor = models.OneToOneField(
+        UserModel,
+        blank=False,
+        null=False,
+        related_name='doctor',
+        on_delete=models.CASCADE
+    )
+    specialization = models.ManyToManyField(
+        DoctorsSpecialization,
+        blank=True
+    )
+    patients = models.ManyToManyField(
+        PatientsModel,
+        related_name='patients',
+        blank=True
+    )

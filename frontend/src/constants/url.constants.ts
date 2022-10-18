@@ -10,7 +10,7 @@ export const user_urls = {
 
 export const boards_url = {
   me: `${URL}/users/me`,
-  all_users: `${URL}/users`,
+  all_users: `${URL}/users/all`,
   all_doctors: `${URL}/doctors`,
   all_patients: `${URL}/patient`,
 }
