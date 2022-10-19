@@ -14,5 +14,4 @@ class PatientsModel(models.Model):
     class Meta:
         db_table = 'patients'
 
-    patient = models.OneToOneField(UserModel,related_name='patient',on_delete=models.CASCADE)
-
+    patient = models.OneToOneField(UserModel, related_name='patient', on_delete=models.CASCADE)

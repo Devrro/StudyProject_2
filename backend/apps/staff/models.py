@@ -13,11 +13,11 @@ UserModel: Type[UserModelTyping] = get_user_model()
 # Create your models here.
 
 
-class DoctorsSpecialization(models.Model):
+class DoctorsListOfSpecializations(models.Model):
     class Meta:
-        db_table = 'doctors_spec'
+        db_table = 'doctors_spec_list'
 
-    specialization = models.SmallIntegerField(choices=DOCTOR_SPEC_CHOICES, blank=True)
+    specialization = models.CharField(max_length=120, blank=False)
 
 
 class DoctorsModel(models.Model):
@@ -29,10 +29,10 @@ class DoctorsModel(models.Model):
         blank=False,
         null=False,
         related_name='doctor',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     specialization = models.ManyToManyField(
-        DoctorsSpecialization,
+        DoctorsListOfSpecializations,
         blank=True
     )
     patients = models.ManyToManyField(
