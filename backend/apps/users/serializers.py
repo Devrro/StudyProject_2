@@ -20,7 +20,7 @@ class ProfileSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     profile: Type[ProfileSerializer] = ProfileSerializer()
     is_patient = BooleanField(required=False, write_only=True)
-    is_doctor = BooleanField(required=False, write_only=True,)
+    is_doctor = BooleanField(required=False, write_only=True, )
 
     class Meta:
         model = UserModel
@@ -51,11 +51,12 @@ class UserSerializer(ModelSerializer):
             'password': {'write_only': True},
         }
 
-    def validate_is_doctor(self,value):
+    def validate_is_doctor(self, value):
         if not value or value is None:
             raise ValidationError('Field is a doctor must be set')
         return value
-    def validate_is_patient(self,value):
+
+    def validate_is_patient(self, value):
         if not value or value is None:
             raise ValidationError('Field is a patient must be set')
         return value
@@ -67,8 +68,8 @@ class UserSerializer(ModelSerializer):
 
     def create(self, validated_data):
         profile = validated_data.pop('profile')
-        is_patient = validated_data.pop('is_patient',False)
-        is_doctor = validated_data.pop('is_doctor',False)
+        is_patient = validated_data.pop('is_patient', False)
+        is_doctor = validated_data.pop('is_doctor', False)
         user = UserModel.objects.create_user(**validated_data)
         if is_patient:
             PatientsModel.objects.create(patient=user)
