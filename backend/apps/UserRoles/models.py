@@ -2,7 +2,6 @@ from django.db import models
 
 from .constants.roles_choices import ROLE_CHOICES
 
-# Create your models here.
 
 class UserRoles(models.Model):
     class Meta:

@@ -14,6 +14,7 @@ drf-yasg = "*"
 django-filter = "*"
 
 [dev-packages]
+isort = "*"
 
 [requires]
 python_version = "3.10"

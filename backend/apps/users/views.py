@@ -21,9 +21,9 @@ class UserCreateView(CreateAPIView):
         Create user view
         post:
             For user signup you have to provide full credentials
-            Additionally you can set two keys:
-                is_patient or is_doctor
             When you do, user automatically will be registered as a patient or\and as a doctor
+            Additionally you can set "is_doctor" field to be true, if you want to register user as a doctor
+            User is always registered as a patient. To change that behavior you must set field "is_patient" to false.
     """
 
     queryset = UserModel.objects.all()
