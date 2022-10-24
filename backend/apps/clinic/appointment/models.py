@@ -1,9 +1,8 @@
 from django.db import models
 
 from apps.clinic.models import ClinicModel
-from apps.staff.models import DoctorsModel
 from apps.patients.models import PatientsModel
-
+from apps.staff.models import DoctorsModel
 
 # Create your models here.
 

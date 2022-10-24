@@ -7,5 +7,5 @@ class UserRoles(models.Model):
     class Meta:
         db_table = 'user_roles'
 
-    patients = models.SmallIntegerField(choices=ROLE_CHOICES, primary_key=True)
+    roles = models.SmallIntegerField(choices=ROLE_CHOICES, primary_key=True)
 

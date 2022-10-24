@@ -1,4 +1,26 @@
-<div class="container d-flex flex-wrap gap-1 justify-content-start"
-     style="margin-top: 120px">
-  <app-board-user *ngFor="let user of list_of_users" [user]="user"></app-board-user>
+<div class="container">
+  <div *ngIf="list_of_users else welcome_screen"></div>
+  <div *ngIf="!list_of_users else users_screen"></div>
+
+
+
+
+
+
 </div>
+
+<ng-template #welcome_screen>
+  <div>
+    <p>Hello</p>
+  </div>
+</ng-template>
+
+<ng-template #users_screen>
+  <div>
+    <p>List of users</p>
+  </div>
+  <div class="container d-flex flex-wrap gap-1 justify-content-start"
+       style="margin-top: 120px">
+    <app-board-user *ngFor="let user of list_of_users" [user]="user"></app-board-user>
+  </div>
+</ng-template>

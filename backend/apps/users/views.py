@@ -1,22 +1,25 @@
-from rest_framework.generics import ListAPIView, CreateAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from typing import Type
+
 from django.contrib.auth import get_user_model
-from apps.users.serializers import UserSerializer
-from .models import UserModel as UserModelTyping
-from rest_framework.response import Response
+
 from rest_framework import status
+from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, get_object_or_404
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+
+from apps.users.serializers import UserRoleSerializer, UserSerializer
 
 from ..patients.models import PatientsModel
 from ..patients.serializers import PatientsSerializer
 from ..staff.models import DoctorsModel
 from ..staff.serializers import DoctorSerializer
+from ..UserRoles.models import UserRoles
+from .models import UserModel as UserModelTyping
 
 UserModel: Type[UserModelTyping] = get_user_model()
 
 
 class UserCreateView(CreateAPIView):
-
     """
         Create user view
         post:
@@ -41,6 +44,48 @@ class UserListView(ListAPIView):
     def get_queryset(self):
         qs = self.queryset
         return qs
+
+
+class UserListUpdateRolesView(RetrieveUpdateAPIView):
+    """
+    Retrieve user`s roles by id view
+    """
+
+    queryset = UserModel.objects.all()
+    serializer_class = UserRoleSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        qs = self.queryset.filter(id=pk)
+        return qs
+
+    def get(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        # print(qs.query)
+        serializer = self.serializer_class(qs, many=True)
+        if serializer:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        qs = self.queryset()
+        user: UserModel = self.get_object()
+        user_role = self.kwargs.get('user_role')
+        role_query = UserRoles.objects.all()
+
+        if isinstance(user_role, list):
+            for i in list:
+                obj = get_object_or_404(role_query, pk=i)
+                user.user_role.add(obj)
+                user.save()
+            return Response('Roles were added to user', status=status.HTTP_200_OK)
+
+        if isinstance(user_role, int):
+            obj_role = get_object_or_404(role_query, pk=user_role)
+            user.user_role.add(obj_role)
+            user.save()
+            return Response(obj_role, status=status.HTTP_200_OK)
 
 
 class UserListSelfView(ListAPIView):

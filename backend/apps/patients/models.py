@@ -1,7 +1,7 @@
-from django.db import models
+from typing import Type
 
 from django.contrib.auth import get_user_model
-from typing import Type
+from django.db import models
 
 from ..users.models import UserModel as UserModelTyping
 
@@ -14,4 +14,7 @@ class PatientsModel(models.Model):
     class Meta:
         db_table = 'patients'
 
-    patient = models.OneToOneField(UserModel, related_name='patient', on_delete=models.CASCADE)
+    patient = models.OneToOneField(
+        UserModel,
+        on_delete=models.CASCADE,
+    )

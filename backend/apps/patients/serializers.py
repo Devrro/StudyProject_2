@@ -6,5 +6,5 @@ from apps.patients.models import PatientsModel
 class PatientsSerializer(ModelSerializer):
     class Meta:
         model = PatientsModel
-        fields = ('id', 'patient')
+        fields = ('id','patient',)
         read_only_fields = ('id',)
