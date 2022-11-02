@@ -22,6 +22,7 @@ export class ProfileComponent implements OnInit {
     this.userService.getMeUser().subscribe({
       next:(value)=>{
         const user:IUserModelInfo = value.results[0]
+        this.currentUser = user
         this.tokenStorageService.saveUser(user)
       },
       error:(value)=>{}

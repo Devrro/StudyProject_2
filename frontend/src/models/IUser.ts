@@ -1,4 +1,6 @@
 export interface IUserModelSignUp {
+  is_doctor: boolean,
+  is_patient: boolean,
   email: string,
   password: string,
   profile: IProfile,
@@ -16,6 +18,7 @@ export interface IProfile {
   first_name: string,
   second_name: string,
   last_name: string,
+  avatar:string
 }
 
 export interface IUserRole {

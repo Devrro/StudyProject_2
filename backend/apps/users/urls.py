@@ -10,7 +10,7 @@ from apps.users.views import (
 )
 
 urlpatterns = [
-    path('', UserCreateView.as_view(), name='users'),
+    path('/sign_up', UserCreateView.as_view(), name='sign_up'),
     path('/all', UserListView.as_view(), name='users'),
     path('/me', UserListSelfView.as_view(), name='user_self'),
     path('/user/<int:pk>', UserListByIdView.as_view(), name='user_by_id'),

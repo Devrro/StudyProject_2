@@ -3,7 +3,7 @@ import {environment} from "../environments/environment"
 const {URL} = environment;
 
 export const user_urls = {
-  register: `${URL}/users`,
+  register: `${URL}/users/sign_up`,
   login: `${URL}/auth/token`,
   refresh: `${URL}/auth/token/refresh`
 }

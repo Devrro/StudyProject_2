@@ -14,8 +14,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class LoginComponent implements OnInit {
 
   formLogin: FormGroup = new FormGroup({
-    email: new FormControl('101@gmail.com'),
-    password: new FormControl('1111')
+    email: new FormControl('doctor_1@gmail.com'),
+    password: new FormControl('111111')
   })
   isLoggedIn = false;
   isLoginFailed = false;
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private tokenStorage: TokenStorageService,
-    private router:Router
+    private router: Router
   ) {
   }
 
@@ -39,6 +39,9 @@ export class LoginComponent implements OnInit {
         this.user = user
       }
       this.authService.UserIsLogged.next(true)
+    } else {
+
+      this.authService.UserIsLogged.next(false)
     }
   }
 

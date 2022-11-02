@@ -1,23 +1,39 @@
 <div class="col-md-12">
-  <div class="card">
-    <form [formGroup]="registerForm" *ngIf="isSuccessful" (ngSubmit)="onSubmit()" novalidate>
+  <div class="border-2 d-flex align-items-center flex-column" style="margin-top: 120px">
+    <form class="w-75" [formGroup]="registerForm" *ngIf="isSuccessful" (ngSubmit)="onSubmit()" novalidate>
       <div class="form-group">
         <label for="email">Email</label>
         <input type="text" id="email" class="form-control" required email formControlName="email">
         <label for="password">Password</label>
         <input type="text" id="password" class="form-control" required formControlName="password">
-        <label for="age">Age</label>
-        <input type="text" id="age" class="form-control" required formControlName="age">
-        <label for="first_name">First name</label>
-        <input type="text" id="first_name" class="form-control" required formControlName="first_name">
-        <label for="second_name">Second name</label>
-        <input type="text" id="second_name" class="form-control" required formControlName="second_name">
-        <label for="last_name">Last name</label>
-        <input type="text" id="last_name" class="form-control" required formControlName="last_name">
+        <div formGroupName="profile">
+          <label for="age">Age</label>
+          <input type="text" id="age" class="form-control" required formControlName="age">
+          <label for="first_name">First name</label>
+          <input type="text" id="first_name" class="form-control" required formControlName="first_name">
+          <label for="second_name">Second name</label>
+          <input type="text" id="second_name" class="form-control" required formControlName="second_name">
+          <label for="last_name">Last name</label>
+          <input type="text" id="last_name" class="form-control" required formControlName="last_name">
+        </div>
+        <div>
+          <div class="mx-2 d-flex align-items-center">
+            <label class="me-2 my-1" for="is_patient">I am a patient</label>
+            <input type="checkbox" id="is_patient" class="checkbox my-1" (click)="checkPatient()"
+                   [checked]="is_patient_checker" formControlName="is_patient">
+          </div>
+          <div class="mx-2 d-flex align-items-center">
+            <label class="me-2 my-1" for="is_doctor">I am a doctor</label>
+            <input type="checkbox" id="is_doctor" class="checkbox my-1" (click)="checkDoctor()"
+                   [checked]="is_doctor_checker" formControlName="is_doctor">
+          </div>
+        </div>
       </div>
       <div class="form-group">
         <button class="btn btn-primary btn-block">Sign Up</button>
       </div>
     </form>
+    <div class="warning" *ngIf="this.errMsg">
+      {{this.errMsg}}
+    </div>
   </div>
-</div>
