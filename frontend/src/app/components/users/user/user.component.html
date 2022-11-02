@@ -1,0 +1,42 @@
+<div class="col 1"
+     style="
+     flex: 1 1 0;
+     max-width: 316px;
+">
+  <div *ngIf="user" class="card" style="">
+    <!--  <img src="..." class="card-img-top" alt="...">-->
+    <div class="card-body">
+      <h5 class="card-title">{{user.email}}</h5>
+      <p class="card-text">
+      </p>
+      <ul class="list-group">
+        <li class="list-group-item text-capitalize">
+          <p class="d-flex justify-content-between">First name: <span class="fw-bold">{{user.profile.first_name}}</span>
+          </p>
+        </li>
+        <li class="list-group-item text-capitalize">
+          <p class="d-flex justify-content-between">Second name: <span
+            class="fw-bold">{{user.profile.second_name}}</span>
+          </p>
+        </li>
+        <li class="list-group-item text-capitalize">
+          <p class="d-flex justify-content-between">Last name: <span class="fw-bold">{{user.profile.last_name}}</span>
+          </p>
+        </li>
+        <li class="list-group-item ">
+          <p class="d-flex justify-content-between">Age: <span class="fw-bold">{{user.profile.age}}</span></p>
+        </li>
+      </ul>
+      <div>
+        <a [routerLink]="'#'" class="btn btn-primary mt-2">USER PROFILE</a>
+      </div>
+      <div>
+        <a [routerLink]="'#'" class="btn btn-primary mt-2">PATIENTS PROFILE</a>
+      </div>
+      <div *ngIf="user.user_role">
+        <a [routerLink]="'#'" class="btn btn-primary mt-2">DOCTORS` PROFILE</a>
+      </div>
+    </div>
+  </div>
+
+</div>

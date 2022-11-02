@@ -1,6 +1,7 @@
 from typing import Type
 
 from django.contrib.auth import get_user_model
+from django.db.transaction import atomic
 
 from rest_framework.serializers import BooleanField, ModelSerializer, SerializerMethodField, ValidationError
 
@@ -12,6 +13,10 @@ from apps.users.models import ProfileModel
 
 UserModel = get_user_model()
 
+class AvatarSerializer(ModelSerializer):
+    class Meta:
+        model = ProfileModel
+        fields = ('avatar',)
 
 class ProfileSerializer(ModelSerializer):
     class Meta:
@@ -92,6 +97,7 @@ class UserSerializer(ModelSerializer):
     # #         print(role_serializer.validated_data)
     # #     print(role_serializer.errors)
 
+    @atomic
     def create(self, validated_data):
         profile = validated_data.pop('profile')
         is_patient = validated_data.pop('is_patient', False)

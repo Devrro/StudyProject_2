@@ -1,19 +1,22 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { ProfileComponent } from './components/profile/profile.component';
-import { HomeComponent } from './components/home/home.component';
-import { BoardAdminComponent } from './components/board-admin/board-admin.component';
-import { BoardUserComponent } from './components/board-user/board-user.component';
-import { BoardModeratorComponent } from './components/board-moderator/board-moderator.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {LoginComponent} from './components/login/login.component';
+import {RegisterComponent} from './components/register/register.component';
+import {ProfileComponent} from './components/profile/profile.component';
+import {HomeComponent} from './components/home/home.component';
+import {BoardAdminComponent} from './components/board-admin/board-admin.component';
+import {BoardUserComponent} from './components/board-user/board-user.component';
+import {BoardModeratorComponent} from './components/board-moderator/board-moderator.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {AuthInterceptor, AuthServiceProvider} from "../services/interceptors/auth.interceptor";
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {HttpClientModule} from "@angular/common/http";
+import {AuthServiceProvider} from "../services/interceptors/auth.interceptor";
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {UsersComponent} from './components/users/users.component';
+import {UserComponent} from './components/users/user/user.component';
+import {CabinetComponent} from './components/cabinet/cabinet.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HomeComponent,
     BoardAdminComponent,
     BoardUserComponent,
-    BoardModeratorComponent
+    BoardModeratorComponent,
+    UsersComponent,
+    UserComponent,
+    CabinetComponent
   ],
   imports: [
     BrowserModule,
@@ -37,4 +43,5 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   providers: AuthServiceProvider,
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

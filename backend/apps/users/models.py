@@ -1,8 +1,10 @@
-from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from .managers import UserManager
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+
 from ..UserRoles.models import UserRoles
+from .managers import UserManager
+from .services import upload_to
 
 
 class UserModel(AbstractBaseUser, PermissionsMixin):
@@ -16,7 +18,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    user_role = models.ManyToManyField(UserRoles,related_name='user_roles')
+    user_role = models.ManyToManyField(UserRoles, related_name='user_roles')
 
     USERNAME_FIELD = 'email'
     objects = UserManager()
@@ -31,4 +33,5 @@ class ProfileModel(models.Model):
     last_name = models.CharField(max_length=30)
     age = models.IntegerField(validators=[MaxValueValidator(102), MinValueValidator(0)])
     phone_number = models.CharField(max_length=20, blank=True, null=False)
+    avatar = models.ImageField(upload_to=upload_to, blank=True,null=False)
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='profile')

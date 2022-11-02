@@ -16,5 +16,6 @@ class PatientsModel(models.Model):
 
     patient = models.OneToOneField(
         UserModel,
+        primary_key=True,
         on_delete=models.CASCADE,
     )

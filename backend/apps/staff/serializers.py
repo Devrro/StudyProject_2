@@ -26,7 +26,6 @@ class DoctorSerializer(ModelSerializer):
     class Meta:
         model = DoctorsModel
         fields = (
-            'id',
             'doctor',
             'specialization',
             'patients',

@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {IUserModel} from "../models/IUser";
+import {IUserModelInfo} from "../models/IUser";
+import {AuthService} from "./auth.service";
 
 const TOKEN_KEY = 'auth_token'
 const REFRESH_KEY = 'refresh_token'
@@ -12,10 +13,13 @@ const USER_KEY = 'auth_user'
 
 export class TokenStorageService {
 
-  constructor() {
+  constructor(
+    private authService:AuthService
+  ) {
   }
 
   signOut() {
+    this.authService.UserIsLogged.next(false)
     window.sessionStorage.clear();
   }
 
@@ -32,11 +36,11 @@ export class TokenStorageService {
     return window.sessionStorage.getItem(REFRESH_KEY)
   }
 
-  public saveUser(user: IUserModel): void {
+  public saveUser(user: IUserModelInfo): void {
     window.sessionStorage.setItem(USER_KEY, JSON.stringify(user))
   }
 
-  public getUser(): IUserModel | void {
+  public getUser(): IUserModelInfo | void {
     const user = window.sessionStorage.getItem(USER_KEY)
     if (user) {
       return JSON.parse(user)

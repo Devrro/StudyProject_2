@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../../services/auth.service";
 import {FormControl, FormGroup} from "@angular/forms";
-import {IUserModel} from "../../../models/IUser";
+import { IUserModelSignUp} from "../../../models/IUser";
 
 @Component({
   selector: 'app-register',
@@ -34,7 +34,7 @@ export class RegisterComponent implements OnInit {
 
   onSubmit() {
     let user = this.registerForm.getRawValue()
-    let user_formatted: IUserModel = {
+    let user_formatted: IUserModelSignUp = {
       email: user.email,
       password: user.password,
       profile: {
