@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   refreshToken(token:string):Observable<ITokenPair>{
-    return this.http.post<ITokenPair>(`${user_urls.refresh}`, token)
+    return this.http.post<ITokenPair>(`${user_urls.refresh}`, {"refresh":token})
   }
 
 }

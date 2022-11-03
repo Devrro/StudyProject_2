@@ -12,7 +12,7 @@ const routes: Routes = [
   {path:'home',component:HomeComponent},
   {path:'login',component:LoginComponent,canActivate:[UserGuard]},
   {path:'my_cabinet',component:CabinetComponent,canActivate:[UserGuard]},
-  {path:'profile',component:ProfileComponent,canActivate:[UserGuard]},
+  {path:'profile',component:ProfileComponent,canActivate:[]},
   {path:'register',component:RegisterComponent,canActivate:[UserGuard]},
   {path:'user',component:BoardUserComponent},
   {path:'patient',component:HomeComponent},

@@ -1,17 +1,17 @@
 import uuid
 from random import randint
-
-from django.core.management import BaseCommand
-
-from django.contrib.auth import get_user_model
-
-from apps.staff.models import DoctorsModel
-from apps.users.models import UserModel as UserModelTyping, ProfileModel
-from django.utils.crypto import get_random_string
 from typing import Type
 
+from core.enums.users_constants import female_names_enum, male_names_enum, second_names_enum
+
+from django.contrib.auth import get_user_model
+from django.core.management import BaseCommand
+from django.utils.crypto import get_random_string
+
+from apps.staff.models import DoctorsModel
+from apps.users.models import ProfileModel
+from apps.users.models import UserModel as UserModelTyping
 from apps.users.serializers import UserSerializer
-from core.enums.users_constants import male_names_enum, female_names_enum, second_names_enum
 
 UserModel: Type[UserModelTyping] = get_user_model()
 
