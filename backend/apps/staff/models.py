@@ -1,16 +1,12 @@
-from django.db import models
+from typing import Type
 
 from django.contrib.auth import get_user_model
-from typing import Type
+from django.db import models
 
 from ..patients.models import PatientsModel
 from ..users.models import UserModel as UserModelTyping
-from .constants.doctors_spec_choices import DOCTOR_SPEC_CHOICES
 
 UserModel: Type[UserModelTyping] = get_user_model()
-
-
-# Create your models here.
 
 
 class DoctorsListOfSpecializations(models.Model):
@@ -26,6 +22,7 @@ class DoctorsModel(models.Model):
 
     doctor = models.OneToOneField(
         UserModel,
+        primary_key=True,
         blank=False,
         null=False,
         related_name='doctor',

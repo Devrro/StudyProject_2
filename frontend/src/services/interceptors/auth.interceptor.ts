@@ -16,7 +16,7 @@ const TOKEN_HEADER_TYPE = 'Authorization'
 export class AuthInterceptor implements HttpInterceptor {
 
   isRefreshing = false
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private refreshTokenSubject: BehaviorSubject<string|null> = new BehaviorSubject<string|null>(null);
 
   constructor(
     private tokenStorage: TokenStorageService,
@@ -31,11 +31,11 @@ export class AuthInterceptor implements HttpInterceptor {
       authReq = this.AddTokenHeader(request, token)
     }
     return next.handle(authReq).pipe(catchError(error => {
-
         if (error instanceof HttpErrorResponse && !authReq.url.includes('register') && error.status === 401) {
           return this.handle401error(authReq, next)
+        } else {
+          this.tokenStorage.signOut()
         }
-
         return throwError(error)
       })
     )
@@ -50,12 +50,10 @@ export class AuthInterceptor implements HttpInterceptor {
       this.isRefreshing = true
       this.refreshTokenSubject.next(null)
       const refresh_token = this.tokenStorage.getRefreshToken()
-
       if (refresh_token) {
         return this.authService.refreshToken(refresh_token).pipe(
           switchMap((tokens: ITokenPair) => {
             this.isRefreshing = false
-
             this.tokenStorage.SaveTokens(tokens)
             this.refreshTokenSubject.next(tokens.refresh)
 
@@ -69,7 +67,6 @@ export class AuthInterceptor implements HttpInterceptor {
           return throwError(err)
         })
       }
-
     }
     return this.refreshTokenSubject.pipe(
       filter(token => token !== null),

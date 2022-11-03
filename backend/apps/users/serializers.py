@@ -1,6 +1,7 @@
 from typing import Type
 
 from django.contrib.auth import get_user_model
+from django.db.transaction import atomic
 
 from rest_framework.serializers import BooleanField, ModelSerializer, SerializerMethodField, ValidationError
 
@@ -11,6 +12,12 @@ from apps.UserRoles.serializers import RoleSerializer
 from apps.users.models import ProfileModel
 
 UserModel = get_user_model()
+
+
+class AvatarSerializer(ModelSerializer):
+    class Meta:
+        model = ProfileModel
+        fields = ('avatar',)
 
 
 class ProfileSerializer(ModelSerializer):
@@ -29,7 +36,8 @@ class UserRoleSerializer(ModelSerializer):
     class Meta:
         model = UserModel
         fields = ('user_role',)
-        
+
+
 class UserSerializer(ModelSerializer):
     profile: Type[ProfileSerializer] = ProfileSerializer()
     is_patient = BooleanField(required=False, write_only=True)
@@ -68,16 +76,6 @@ class UserSerializer(ModelSerializer):
             'user_role': {'required': False}
         }
 
-    def validate_is_doctor(self, value):
-        if not value or value is None:
-            raise ValidationError('Field is a doctor must be set')
-        return value
-
-    def validate_is_patient(self, value):
-        if not value or value is None:
-            raise ValidationError('Field is a patient must be set')
-        return value
-
     def validate(self, attrs):
         if 'is_patient' not in attrs and 'is_doctor' not in attrs:
             raise ValidationError('You must set at least one field from:"is_doctor","is_patient"')
@@ -92,16 +90,17 @@ class UserSerializer(ModelSerializer):
     # #         print(role_serializer.validated_data)
     # #     print(role_serializer.errors)
 
+    @atomic
     def create(self, validated_data):
         profile = validated_data.pop('profile')
         is_patient = validated_data.pop('is_patient', False)
         is_doctor = validated_data.pop('is_doctor', False)
         user: UserModel = UserModel.objects.create_user(**validated_data)
-        if is_patient:
+        if is_patient or not is_doctor:
             PatientsModel.objects.create(patient=user)
             role = UserRoles.objects.get(pk=2)
             user.user_role.add(role)
-        if is_doctor:
+        if is_doctor or not is_patient:
             DoctorsModel.objects.create(doctor=user)
             role = UserRoles.objects.get(pk=1)
             user.user_role.add(role)

@@ -1,8 +1,8 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
+
 from .models import UserRoles
 from .serializers import RoleSerializer
-
 
 # Create your views here.
 

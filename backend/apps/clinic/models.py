@@ -2,7 +2,6 @@ from django.db import models
 
 from apps.staff.models import DoctorsModel
 
-
 # Create your models here.
 
 class ClinicModel(models.Model):

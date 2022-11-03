@@ -3,11 +3,11 @@ from typing import Type
 from django.contrib.auth import get_user_model
 
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, get_object_or_404
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView, get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from apps.users.serializers import UserRoleSerializer, UserSerializer
+from apps.users.serializers import AvatarSerializer, UserRoleSerializer, UserSerializer
 
 from ..patients.models import PatientsModel
 from ..patients.serializers import PatientsSerializer
@@ -34,12 +34,19 @@ class UserCreateView(CreateAPIView):
     permission_classes = (AllowAny,)
 
 
+class UserAddAvatarView(UpdateAPIView):
+    serializer_class = AvatarSerializer
+
+    def get_object(self):
+        return self.request.user.profile
+
+    
 class UserListView(ListAPIView):
     """Retrieve users view"""
 
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
         qs = self.queryset

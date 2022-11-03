@@ -49,27 +49,28 @@ class DoctorListByID(ListAPIView):
     #     return Response(doctor_serializer.data, status=status.HTTP_200_OK)
 
 
+# class DoctorListPatientsByID(ListAPIView):
+#     queryset = UserModel.objects.all()
+#     serializer_class = DoctorSerializer
+#     permission_classes = (AllowAny,)
+#
+#
+#     # def get_queryset(self):
+#     #     pk = self.kwargs.get('pk')
+#     #     qs = self.queryset.filter()
+#     #     return qs
+
 class DoctorListPatientsByID(ListAPIView):
     queryset = UserModel.objects.all()
-    serializer_class = DoctorSerializer
+    serializer_class = UserSerializer
     permission_classes = (AllowAny,)
 
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
-        qs = self.queryset.filter(doctor_)
+        qs = self.queryset.filter(patientsmodel__patients__doctor_id__exact=pk)
+        print(qs.query)
         return qs
-
-# class DoctorListPatientsByID(ListAPIView):
-#     queryset = DoctorsModel.objects.all()
-#     serializer_class = DoctorSerializer
-#     permission_classes = (AllowAny,)
-#
-#
-#     def get_queryset(self):
-#         pk = self.kwargs.get('pk')
-#         qs = self.queryset.filter(pk=pk)
-#         return qs
 
 
 class DoctorSpecializationsList(ListAPIView):

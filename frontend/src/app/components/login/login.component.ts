@@ -3,7 +3,8 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
 import {TokenStorageService} from "../../../services/token-storage.service";
 import {UserService} from "../../../services/user.service";
-import {IUserModel} from "../../../models/IUser";
+import {IUserModelInfo} from "../../../models/IUser";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -13,29 +14,34 @@ import {IUserModel} from "../../../models/IUser";
 export class LoginComponent implements OnInit {
 
   formLogin: FormGroup = new FormGroup({
-    email: new FormControl('111@gmail.com'),
-    password: new FormControl('1111')
+    email: new FormControl('doctor_1@gmail.com'),
+    password: new FormControl('111111')
   })
   isLoggedIn = false;
   isLoginFailed = false;
   errMsg = ''
-  user: IUserModel;
+  user: IUserModelInfo;
   roles: string[] = [];
 
   constructor(
     private authService: AuthService,
     private userService: UserService,
-    private tokenStorage: TokenStorageService
+    private tokenStorage: TokenStorageService,
+    private router: Router
   ) {
   }
 
   ngOnInit(): void {
+    this.authService.UserIsLogged.subscribe({next: value => this.isLoggedIn = value})
     if (this.tokenStorage.getAccessToken()) {
       const user = this.tokenStorage.getUser()
       if (user) {
         this.user = user
       }
-      this.isLoggedIn = true
+      this.authService.UserIsLogged.next(true)
+    } else {
+
+      this.authService.UserIsLogged.next(false)
     }
   }
 
@@ -53,10 +59,14 @@ export class LoginComponent implements OnInit {
               let user = value.results[0]
               this.tokenStorage.saveUser(user)
               this.user = user
+              this.authService.UserIsLogged.next(true)
+              this.router.navigate(['/home'])
             },
             error: (err) => {
+              this.authService.UserIsLogged.next(false)
               this.errMsg = err.error.message;
               this.isLoginFailed = true
+
             }
           })
         },

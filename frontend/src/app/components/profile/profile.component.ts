@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../../services/user.service";
 import {TokenStorageService} from "../../../services/token-storage.service";
-import {IUserModel} from "../../../models/IUser";
+import {IUserModelInfo} from "../../../models/IUser";
 
 @Component({
   selector: 'app-profile',
@@ -10,7 +10,7 @@ import {IUserModel} from "../../../models/IUser";
 })
 export class ProfileComponent implements OnInit {
 
-  currentUser: IUserModel;
+  currentUser: IUserModelInfo;
 
   constructor(
     private userService: UserService,
@@ -21,7 +21,8 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getMeUser().subscribe({
       next:(value)=>{
-        const user:IUserModel = value.results[0]
+        const user:IUserModelInfo = value.results[0]
+        this.currentUser = user
         this.tokenStorageService.saveUser(user)
       },
       error:(value)=>{}

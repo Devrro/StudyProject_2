@@ -12,7 +12,7 @@ services:
       - .env
     restart: on-failure
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py a_db_connection && python manage.py runserver 0.0.0.0:8000"
 
   db:
     image: mysql:8.0
