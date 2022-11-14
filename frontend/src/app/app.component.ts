@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {TokenStorageService} from "../services/token-storage.service";
 import {IUserModelInfo} from "../models/IUser";
 import {AuthService} from "../services/auth.service";
 
@@ -19,13 +18,12 @@ export class AppComponent implements OnInit {
 
 
   constructor(
-    private tokenStorageService: TokenStorageService,
     private authService: AuthService,
   ) {
   }
 
   ngOnInit() {
-    if (this.tokenStorageService.getAccessToken()) {
+    if (this.authService.getAccessToken()) {
       this.roles = []
       this.authService.UserIsLogged.next(true)
       this.showDoctorsCabinet = this.roles.includes('doctor')
@@ -36,7 +34,7 @@ export class AppComponent implements OnInit {
       next: (value) => {
         this.isLoggedIn = value
         if (value) {
-          let user: IUserModelInfo | void = this.tokenStorageService.getUser();
+          let user: IUserModelInfo | void = this.authService.getUser();
           if (user) {
             for (let obj of user.user_role) {
               this.roles.unshift(obj.role)
@@ -54,7 +52,7 @@ export class AppComponent implements OnInit {
   logOut() {
     this.authService.UserIsLogged.next(false)
     this.isLoggedIn = false
-    this.tokenStorageService.signOut()
+    this.authService.signOut()
     window.location.reload()
   }
 

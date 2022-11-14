@@ -34,4 +34,5 @@ class ProfileModel(models.Model):
     age = models.IntegerField(validators=[MaxValueValidator(102), MinValueValidator(0)])
     phone_number = models.CharField(max_length=20, blank=True, null=False)
     avatar = models.ImageField(upload_to=upload_to, blank=True,null=False)
+    about_user = models.TextField(blank=True,null=False,default='')
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='profile')

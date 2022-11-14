@@ -3,7 +3,7 @@ from typing import Type
 from django.contrib.auth import get_user_model
 from django.db.transaction import atomic
 
-from rest_framework.serializers import BooleanField, ModelSerializer, SerializerMethodField, ValidationError
+from rest_framework.serializers import BooleanField, ModelSerializer, ValidationError
 
 from apps.patients.models import PatientsModel
 from apps.staff.models import DoctorsModel
@@ -26,12 +26,6 @@ class ProfileSerializer(ModelSerializer):
         exclude = ('user', 'id')
 
 
-# class UserRoleSerializer(ModelSerializer):
-#     # user_roles = RolesSerializer()
-#     class Meta:
-#         model = UserModel
-#         fields = ('user_roles',)
-
 class UserRoleSerializer(ModelSerializer):
     class Meta:
         model = UserModel
@@ -43,7 +37,6 @@ class UserSerializer(ModelSerializer):
     is_patient = BooleanField(required=False, write_only=True)
     is_doctor = BooleanField(required=False, write_only=True)
     user_role = RoleSerializer(many=True, read_only=True)
-
 
     class Meta:
         model = UserModel
@@ -81,26 +74,19 @@ class UserSerializer(ModelSerializer):
             raise ValidationError('You must set at least one field from:"is_doctor","is_patient"')
         return attrs
 
-    # def get_user_role(self, obj):
-    #     print(obj.user_role)
-    # # def get_user_role(self, obj):
-    # #     role_obj = UserRoles.objects.all().filter(roles=obj.user_role)
-    # #     role_serializer = RoleSerializer(data=obj.user_role)
-    # #     if role_serializer.is_valid():
-    # #         print(role_serializer.validated_data)
-    # #     print(role_serializer.errors)
-
     @atomic
     def create(self, validated_data):
         profile = validated_data.pop('profile')
         is_patient = validated_data.pop('is_patient', False)
         is_doctor = validated_data.pop('is_doctor', False)
+        if not is_patient and not is_doctor:
+            raise ValidationError(detail='User must be a patient or a doctor!')
         user: UserModel = UserModel.objects.create_user(**validated_data)
-        if is_patient or not is_doctor:
+        if is_patient:
             PatientsModel.objects.create(patient=user)
             role = UserRoles.objects.get(pk=2)
             user.user_role.add(role)
-        if is_doctor or not is_patient:
+        if is_doctor:
             DoctorsModel.objects.create(doctor=user)
             role = UserRoles.objects.get(pk=1)
             user.user_role.add(role)

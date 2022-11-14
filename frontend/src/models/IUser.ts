@@ -7,8 +7,8 @@ export interface IUserModelSignUp {
 }
 
 export interface IUserModelInfo {
+  id:number,
   email: string,
-  password: string,
   profile: IProfile,
   user_role: IUserRole[]
 }
@@ -18,7 +18,9 @@ export interface IProfile {
   first_name: string,
   second_name: string,
   last_name: string,
-  avatar:string
+  phone_number:string,
+  avatar:string,
+  about_user:string,
 }
 
 export interface IUserRole {

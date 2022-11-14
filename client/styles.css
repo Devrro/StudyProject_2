@@ -10064,5 +10064,8 @@ p {
   margin: 0;
   padding: 0;
 }
+.disp_contents {
+  display: contents;
+}
 
 /*# sourceMappingURL=styles.css.map*/

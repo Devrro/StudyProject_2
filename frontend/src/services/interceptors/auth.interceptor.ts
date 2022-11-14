@@ -9,6 +9,8 @@ import {BehaviorSubject, catchError, filter, Observable, switchMap, take, throwE
 import {TokenStorageService} from "../token-storage.service";
 import {AuthService} from "../auth.service";
 import {ITokenPair} from "../../models/ITokenPair";
+import {logMessages} from "@angular-devkit/build-angular/src/builders/browser-esbuild/esbuild";
+import {Router} from "@angular/router";
 
 const TOKEN_HEADER_TYPE = 'Authorization'
 
@@ -16,63 +18,53 @@ const TOKEN_HEADER_TYPE = 'Authorization'
 export class AuthInterceptor implements HttpInterceptor {
 
   isRefreshing = false
-  private refreshTokenSubject: BehaviorSubject<string|null> = new BehaviorSubject<string|null>(null);
+  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(
-    private tokenStorage: TokenStorageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router:Router
   ) {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     let authReq = request
-    const token = this.tokenStorage.getAccessToken();
+    const token = this.authService.getAccessToken();
     if (token != null) {
       authReq = this.AddTokenHeader(request, token)
     }
     return next.handle(authReq).pipe(catchError(error => {
         if (error instanceof HttpErrorResponse && !authReq.url.includes('register') && error.status === 401) {
           return this.handle401error(authReq, next)
-        } else {
-          this.tokenStorage.signOut()
         }
-        return throwError(error)
+        // this.router.navigate(['login']).then()
+        // this.authService.signOut()
+        // return throwError(() => new Error('Tokes is expired'))
       })
-    )
+    ) as any
   }
 
   private AddTokenHeader(request: HttpRequest<unknown>, token: string) {
     return request.clone({headers: request.headers.set(TOKEN_HEADER_TYPE, 'Bearer ' + token)})
   }
 
-  handle401error(request: HttpRequest<any>, next: HttpHandler) {
+  handle401error(request: HttpRequest<any>, next: HttpHandler):any {
     if (!this.isRefreshing) {
       this.isRefreshing = true
-      this.refreshTokenSubject.next(null)
-      const refresh_token = this.tokenStorage.getRefreshToken()
-      if (refresh_token) {
-        return this.authService.refreshToken(refresh_token).pipe(
-          switchMap((tokens: ITokenPair) => {
-            this.isRefreshing = false
-            this.tokenStorage.SaveTokens(tokens)
-            this.refreshTokenSubject.next(tokens.refresh)
-
+      const refresh = this.authService.getRefreshToken()
+      if (refresh) {
+        return this.authService.refreshToken(refresh).pipe(
+          switchMap((tokens) => {
             return next.handle(this.AddTokenHeader(request, tokens.access))
           }),
+          catchError(() => {
+            this.isRefreshing = false
+            this.authService.signOut()
+            this.router.navigate(['login']).then()
+            return throwError(()=>new Error('Token is invalid or expired'))
+          })
         )
-      } else {
-        catchError((err) => {
-          this.isRefreshing = false
-          this.tokenStorage.signOut()
-          return throwError(err)
-        })
       }
     }
-    return this.refreshTokenSubject.pipe(
-      filter(token => token !== null),
-      take(1),
-      switchMap((token) => next.handle(this.AddTokenHeader(request, token)))
-    )
 
   }
 }

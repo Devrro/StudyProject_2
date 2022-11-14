@@ -7,13 +7,10 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAP
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from apps.users.serializers import AvatarSerializer, UserRoleSerializer, UserSerializer
+from apps.users.serializers import AvatarSerializer, ProfileSerializer, UserRoleSerializer, UserSerializer
 
-from ..patients.models import PatientsModel
-from ..patients.serializers import PatientsSerializer
-from ..staff.models import DoctorsModel
-from ..staff.serializers import DoctorSerializer
 from ..UserRoles.models import UserRoles
+from .models import ProfileModel
 from .models import UserModel as UserModelTyping
 
 UserModel: Type[UserModelTyping] = get_user_model()
@@ -40,7 +37,7 @@ class UserAddAvatarView(UpdateAPIView):
     def get_object(self):
         return self.request.user.profile
 
-    
+
 class UserListView(ListAPIView):
     """Retrieve users view"""
 
@@ -76,13 +73,12 @@ class UserListUpdateRolesView(RetrieveUpdateAPIView):
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
-        qs = self.queryset()
         user: UserModel = self.get_object()
         user_role = self.kwargs.get('user_role')
         role_query = UserRoles.objects.all()
 
         if isinstance(user_role, list):
-            for i in list:
+            for i in user_role:
                 obj = get_object_or_404(role_query, pk=i)
                 user.user_role.add(obj)
                 user.save()
@@ -125,3 +121,42 @@ class UserListByIdView(ListAPIView):
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+class UpdateMyProfileView(UpdateAPIView):
+    queryset = ProfileModel.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        qs = self.queryset.filter(user=self.request.user)
+        print(self.serializer_class.context)
+        return qs
+
+    def get_object(self):
+        user = self.get_queryset()
+        user_profile = get_object_or_404(user)
+        return user_profile
+
+    """
+        Probably should rework this soon
+    """
+    def patch(self, request, *args, **kwargs):
+
+        if self.request.data == {}:
+            return Response('At least one field must be updated', status=status.HTTP_400_BAD_REQUEST)
+
+        request_dict: dict = self.request.data
+        user_obj = self.get_object()
+
+        data = {k: v for k, v in request_dict.items() if v is not None}
+
+        serializer = self.serializer_class(user_obj, data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # return Response(serializer.data,status=status.HTTP_200_OK)

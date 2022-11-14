@@ -14,7 +14,8 @@ from ..patients.serializers import PatientsSerializer
 from ..users.models import UserModel as UserModelTyping
 from ..users.serializers import UserSerializer
 from .models import DoctorsListOfSpecializations, DoctorsModel
-from .serializers import DoctorInfoSerializer, DoctorPatientsSerializer, DoctorSerializer, SpecializationSerializer
+from .serializers import DoctorInfoSerializer, DoctorSerializer, SpecializationSerializer, \
+    DoctorsPatientsSerializer
 
 UserModel: Type[UserModelTyping] = get_user_model()
 
@@ -60,16 +61,14 @@ class DoctorListByID(ListAPIView):
 #     #     qs = self.queryset.filter()
 #     #     return qs
 
-class DoctorListPatientsByID(ListAPIView):
-    queryset = UserModel.objects.all()
-    serializer_class = UserSerializer
+class DoctorByIdListPatients(ListAPIView):
+    queryset = PatientsModel.objects.all()
+    serializer_class = DoctorsPatientsSerializer
     permission_classes = (AllowAny,)
-
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
-        qs = self.queryset.filter(patientsmodel__patients__doctor_id__exact=pk)
-        print(qs.query)
+        qs = self.queryset.filter(patients__doctor_id=pk)
         return qs
 
 
@@ -123,7 +122,7 @@ class DoctorAddSpecializationsView(RetrieveUpdateAPIView):
             if isinstance(spec, list):
                 for i in spec:
                     if doctor_obj.specialization.filter(pk=i):
-                        return Response('Specialization was set already. Check doctor specializations',
+                        return Response({'detail':'Specialization was set already. Check doctor specializations'},
                                         status=status.HTTP_400_BAD_REQUEST)
                     else:
                         try:
@@ -140,7 +139,7 @@ class DoctorAddSpecializationsView(RetrieveUpdateAPIView):
             else:
                 return Response(ValueError, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response('Something went wrong', status=status.HTTP_200_OK)
+        return Response({'detail':'Something went wrong'}, status=status.HTTP_200_OK)
 
 
 class DoctorAddPatientsView(RetrieveUpdateAPIView):
@@ -154,7 +153,7 @@ class DoctorAddPatientsView(RetrieveUpdateAPIView):
         update:
             For this endpoint you have to provide a dict
             named 'patients' with  patients ids or
-            list of ids to be set for a doctor 
+            list of ids to be set to a doctor 
     """
 
     def update(self, request, *args, **kwargs):
@@ -167,23 +166,32 @@ class DoctorAddPatientsView(RetrieveUpdateAPIView):
         :param kwargs:
         :return:
         """
+
         user_id = kwargs.get('pk')
         patients = request.data.get('patients')
-        doctor_obj: DoctorsModel = get_object_or_404(self.get_queryset(), doctor_id=user_id)
+        if user_id is None or patients is None:
+            return Response('You have to data', status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            doctor_obj: DoctorsModel = DoctorsModel.objects.get(pk=user_id)
+        except Exception as s:
+            return Response('Doctors does not exist', status=status.HTTP_400_BAD_REQUEST)
 
         if patients:
             if isinstance(patients, list):
                 for i in patients:
                     try:
-                        patient = UserModel.objects.all().get(pk=i)
+                        patient = PatientsModel.objects.all().get(pk=i)
                         print(patient)
                         doctor_obj.patients.add(patient)
                         doctor_obj.save()
                     except ValueError:
                         return Response(ValueError, status=status.HTTP_400_BAD_REQUEST)
                 return Response('Patient(`s) was added', status=status.HTTP_200_OK)
-            # elif isinstance(patients, int):
-            #     patient = get_object_or_404(UserModel.objects.all(), pk=spec)
-            #     doctor_obj.patients.add(patient)
-            #     doctor_obj.save()
-        return Response('Something went wrong', status=status.HTTP_200_OK)
+            elif isinstance(patients, int):
+                patient = get_object_or_404(PatientsModel.objects.all(), pk=patients)
+                doctor_obj.patients.add(patient)
+                doctor_obj.save()
+            return Response('Patient(`s) was added', status=status.HTTP_200_OK)
+
+        return Response({'detail': 'Something went wrong'}, status=status.HTTP_200_OK)

@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
+from ..patients.serializers import PatientsSerializer
 from ..users.models import UserModel as UserModelTyping
 from ..users.serializers import UserSerializer
 from .models import DoctorsListOfSpecializations, DoctorsModel
@@ -33,19 +34,13 @@ class DoctorSerializer(ModelSerializer):
         read_only_fields = ('doctor', 'id')
 
 
-class DoctorPatientsSerializer(ModelSerializer):
-
-    patients = UserSerializer(many=True,read_only=True)
-    """
-    This serializer provides you access to doctors` patients
-    """
+class DoctorsPatientsSerializer(ModelSerializer):
+    patient = UserSerializer()
+    patient_card = PatientsSerializer(source='patient_id')
 
     class Meta:
-        model = DoctorsModel
-        fields = (
-            'patients',
-        )
-        read_only_fields = ('patients',)
+        model = UserModel
+        fields = ('patient', 'patient_card')
 
 
 class DoctorInfoSerializer(ModelSerializer):
@@ -54,6 +49,7 @@ class DoctorInfoSerializer(ModelSerializer):
     """
     doctor = UserSerializer(read_only=True)
     specialization = SerializerMethodField()
+
     class Meta:
         model = DoctorsModel
         fields = (
